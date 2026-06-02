@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3ac7dd1ad86e00428d5e68dfc619a55, type: 3}
+  m_Name: BF_ShoulderR_Std
+  m_EditorClassIdentifier: Assembly-CSharp::SteelLance.Data.BodyFrameSO
+  partId: BF_ShoulderR_Std
+  displayName: BF_ShoulderR_Std
+  description: 
+  partKind: 0
+  rarity: 0
+  weight: 6
+  shopPrice: 0
+  salvageTag: 
+  icon: {fileID: 0}
+  bodyRegion: 5
+  baseHP: 50
+  damagedThreshold: 0.5
+  internalSlots:
+  - slotId: ShoulderR_Weapon
+    slotType: 0
+    allowedClasses: 01000000
+    required: 0
+    socketName: 
+  visualPrefab: {fileID: 0}

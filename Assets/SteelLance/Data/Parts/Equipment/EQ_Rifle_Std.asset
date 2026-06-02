@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef1827488ae263489abe67a122c0825, type: 3}
+  m_Name: EQ_Rifle_Std
+  m_EditorClassIdentifier: Assembly-CSharp::SteelLance.Data.EquipmentSO
+  partId: EQ_Rifle_Std
+  displayName: EQ_Rifle_Std
+  description: 
+  partKind: 1
+  rarity: 0
+  weight: 2
+  shopPrice: 0
+  salvageTag: 
+  icon: {fileID: 0}
+  equipmentClass: 0
+  slotType: 0
+  stats:
+    damage: 10
+    fireRate: 0
+    range: 0
+    accuracyModifier: 0
+    lockOnSpeedModifier: 0
+    maxSpeedModifier: 0
+    turnRateModifier: 0
+    carryCapacityBonus: 0
+  weaponProfile:
+    projectilePrefab: {fileID: 6903619454555515429, guid: 60703b9d40dcebe4fb32e14b82295e94, type: 3}
+    muzzleSocket: 
+    cooldown: 0.25
+    magazineSize: 0

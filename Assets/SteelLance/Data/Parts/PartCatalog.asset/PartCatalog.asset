@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 743034519775ad14ab09a11db6619fcd, type: 3}
+  m_Name: PartCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::SteelLance.Data.PartCatalogSO
+  allParts:
+  - {fileID: 11400000, guid: a15ed24dce40ab441b7ae86ceeab84d2, type: 2}
+  - {fileID: 11400000, guid: b988c40e07c47f04a9b49f18d3bc543e, type: 2}
+  - {fileID: 11400000, guid: c23f4c3b64477284e86ab54201a9eac9, type: 2}
+  - {fileID: 11400000, guid: 552194c677c813741ab379d81d7ad561, type: 2}
+  - {fileID: 11400000, guid: b28404c4b24fe78428c127e30284fe4e, type: 2}
+  - {fileID: 11400000, guid: c67c0a0590263d442b265640c67a09dd, type: 2}
+  - {fileID: 11400000, guid: 75107a7addaa35140a22ae625f900721, type: 2}
+  - {fileID: 11400000, guid: 82cd57fd32d35674cb174b52a0659218, type: 2}
+  - {fileID: 11400000, guid: 140b08006bf73444098f2e7736e3e7b9, type: 2}
