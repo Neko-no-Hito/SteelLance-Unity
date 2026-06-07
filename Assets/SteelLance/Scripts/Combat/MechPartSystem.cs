@@ -18,9 +18,13 @@ namespace SteelLance.Combat
         [SerializeField] private MechBuild defaultBuild;
         [SerializeField] private PartCatalogSO partCatalog;
         [SerializeField] private PartInstance[] partInstances;
+        [SerializeField] private MechPartConfig partConfig;
+        [SerializeField] private SalvageSO salvageConfig;
         [SerializeField] private bool deployOnStart = true;
         [SerializeField] private bool logDefeatReason = true;
         [SerializeField] private bool logDeploySummary = true;
+
+        private bool _headEndBattleFlagEnabled = true;
 
         private readonly Dictionary<BodyRegion, BodyPartHealth> _parts = new();
         private readonly List<BodyRegion> _activeWeaponMounts = new();
@@ -42,8 +46,24 @@ namespace SteelLance.Combat
 
         private void Awake()
         {
+            _headEndBattleFlagEnabled = partConfig == null || partConfig.headEndBattleFlagEnabled;
             CachePartsAndWeapons();
         }
+
+#if UNITY_EDITOR
+        /// <summary>Editor/batchmode regression — Awake/Start do not run outside Play.</summary>
+        public void EditorEnsureInitialized()
+        {
+            _defeated = false;
+            _headEndBattleFlagEnabled = partConfig == null || partConfig.headEndBattleFlagEnabled;
+            if (_parts.Count == 0)
+            {
+                CachePartsAndWeapons();
+            }
+
+            DeployDefaultBuild();
+        }
+#endif
 
         private void Start()
         {
@@ -93,6 +113,52 @@ namespace SteelLance.Combat
             return false;
         }
 
+        /// <summary>End-battle flags per 部位破壊設計.md §6.5. Legs are excluded.</summary>
+        public MechDefeatReason? EvaluateEndBattleFlags()
+        {
+            var torso = GetPart(BodyRegion.Torso);
+            if (torso != null && torso.Condition == PartCondition.Destroyed)
+            {
+                return MechDefeatReason.TorsoDestroyed;
+            }
+
+            if (_headEndBattleFlagEnabled)
+            {
+                var head = GetPart(BodyRegion.Head);
+                if (head != null && head.Condition == PartCondition.Destroyed)
+                {
+                    return MechDefeatReason.HeadDestroyed;
+                }
+            }
+
+            if (CheckAllWeaponsLost())
+            {
+                return MechDefeatReason.AllWeaponsLost;
+            }
+
+            return null;
+        }
+
+        /// <summary>Phase2B debug — toggle head end-battle flag without asset edit.</summary>
+        public void SetHeadEndBattleFlagForDebug(bool enabled)
+        {
+            _headEndBattleFlagEnabled = enabled;
+            Debug.Log($"[SteelLance] headEndBattleFlagEnabled = {enabled}");
+        }
+
+        /// <summary>Phase2B debug — force part condition for Play verification.</summary>
+        public void SetPartConditionForDebug(BodyRegion region, PartCondition target)
+        {
+            var part = GetPart(region);
+            if (part == null)
+            {
+                Debug.LogWarning($"[SteelLance] SetPartConditionForDebug: no part for {region}");
+                return;
+            }
+
+            part.SetConditionForDebug(target);
+        }
+
         public void DeployDefaultBuild()
         {
             if (defaultBuild == null || partCatalog == null || partInstances == null)
@@ -100,6 +166,8 @@ namespace SteelLance.Combat
                 RecalculateMultipliers();
                 return;
             }
+
+            LogWeightOverageIfAny(defaultBuild, partCatalog, partInstances);
 
             var validation = MechBuildValidator.Validate(defaultBuild, partCatalog, partInstances);
             if (!validation.IsValid)
@@ -175,11 +243,7 @@ namespace SteelLance.Combat
             if (next == PartCondition.Destroyed)
             {
                 TryTriggerDefeat(part.Region);
-            }
-
-            if (CheckAllWeaponsLost())
-            {
-                TriggerDefeat(MechDefeatReason.AllWeaponsLost);
+                SalvageResolver.ResolveGradeForDestroyedPart(part, salvageConfig);
             }
         }
 
@@ -191,6 +255,7 @@ namespace SteelLance.Combat
             var parts = GetComponentsInChildren<BodyPartHealth>(true);
             foreach (var part in parts)
             {
+                part.BindOwner(this);
                 _parts[part.Region] = part;
             }
 
@@ -264,6 +329,23 @@ namespace SteelLance.Combat
                 weapon.ApplyWeaponProfile(equipment.weaponProfile, equipment.stats);
                 weapon.enabled = GetPartCondition(weapon.BodyRegion) != PartCondition.Destroyed;
             }
+        }
+
+        private static void LogWeightOverageIfAny(
+            MechBuild build,
+            PartCatalogSO catalog,
+            IReadOnlyList<PartInstance> instances)
+        {
+            var totalWeight = MechBuildCalculator.GetTotalWeight(build, catalog, instances);
+            var weightLimit = MechBuildCalculator.GetWeightClassLimit(build.weightClass);
+            if (totalWeight <= weightLimit)
+            {
+                return;
+            }
+
+            Debug.LogWarning(
+                $"[SteelLance] 重量超過 — TotalWeight {totalWeight:0.#}t > weightClass上限 {weightLimit:0.#}t " +
+                $"({build.weightClass}) · weightFactor=0.5");
         }
 
         private void LogDeploySummary(
@@ -351,6 +433,7 @@ namespace SteelLance.Combat
 
         private void RecalculateMultipliers()
         {
+            // Torso Damaged: 動力系デバフ（過熱・排熱効率・最大熱）は Phase4+（熱管理設計.md §7）。Phase2 では未適用。
             var weightFactor = MechBuildCalculator.GetWeightFactor(defaultBuild, partCatalog, partInstances);
             var legCondition = GetPartCondition(BodyRegion.Legs);
 
@@ -375,17 +458,14 @@ namespace SteelLance.Combat
 
         private void TryTriggerDefeat(BodyRegion region)
         {
-            switch (region)
+            var reason = EvaluateEndBattleFlags();
+            if (reason.HasValue)
             {
-                case BodyRegion.Torso:
-                    TriggerDefeat(MechDefeatReason.TorsoDestroyed);
-                    break;
-                case BodyRegion.Head:
-                    TriggerDefeat(MechDefeatReason.HeadDestroyed);
-                    break;
-                case BodyRegion.Legs:
-                    TriggerDefeat(MechDefeatReason.LegsDestroyed);
-                    break;
+                TriggerDefeat(reason.Value);
+            }
+            else if (region == BodyRegion.Legs)
+            {
+                Debug.Log("[SteelLance] Legs destroyed — movement debuff only (not end-battle flag).");
             }
         }
 

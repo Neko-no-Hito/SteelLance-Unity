@@ -19,12 +19,26 @@ namespace SteelLance.Data
         public string equipmentInstanceId;
     }
 
+    /// <summary>
+    /// Arm primary/reserve loadout. SwapReserve() combat logic is 🔴 stub (R1 · Phase3+).
+    /// Salvage とどめは equipmentInstanceId 単位（R2 · サルベージ設計.md）。
+    /// </summary>
+    [Serializable]
+    public class ArmLoadout
+    {
+        public string primaryEquipmentInstanceId;
+        public string reserveEquipmentInstanceId;
+    }
+
     [Serializable]
     public class BodySlotState
     {
         public BodyRegion bodyRegion;
         public string frameInstanceId;
         public List<SlotEquipment> slotEquipments = new();
+
+        // ArmL/ArmR: reserve loadout (Phase2 combat unused)
+        public ArmLoadout armLoadout;
     }
 
     [Serializable]
@@ -88,6 +102,8 @@ namespace SteelLance.Data
                     "同一 instanceId の二重使用",
                 BuildValidationError.TorsoDestroyed =>
                     "胴体 frame の currentHP <= 0",
+                BuildValidationError.ShoulderPairMismatch =>
+                    "肩 L/R の shoulderSetId が不一致、または片方のみ設定",
                 _ => error.ToString()
             };
         }

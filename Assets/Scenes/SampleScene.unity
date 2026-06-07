@@ -923,6 +923,8 @@ MonoBehaviour:
   region: 6
   maxHP: 60
   damagedThreshold: 0.5
+  hasQualityPool: 0
+  qualityHPMax: 50
 --- !u!65 &520839356
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1077,26 +1079,49 @@ MonoBehaviour:
     - bodyRegion: 0
       frameInstanceId: frame_head
       slotEquipments: []
+      armLoadout:
+        primaryEquipmentInstanceId: 
+        reserveEquipmentInstanceId: 
     - bodyRegion: 1
       frameInstanceId: frame_torso
       slotEquipments: []
+      armLoadout:
+        primaryEquipmentInstanceId: 
+        reserveEquipmentInstanceId: 
     - bodyRegion: 2
       frameInstanceId: frame_armL
       slotEquipments: []
+      armLoadout:
+        primaryEquipmentInstanceId: 
+        reserveEquipmentInstanceId: 
     - bodyRegion: 3
       frameInstanceId: frame_armR
       slotEquipments:
       - slotId: armR_Weapon
         equipmentInstanceId: eq_rifle
+      armLoadout:
+        primaryEquipmentInstanceId: 
+        reserveEquipmentInstanceId: 
     - bodyRegion: 4
       frameInstanceId: frame_shoulderL
       slotEquipments: []
+      armLoadout:
+        primaryEquipmentInstanceId: 
+        reserveEquipmentInstanceId: 
     - bodyRegion: 5
       frameInstanceId: frame_shoulderR
-      slotEquipments: []
+      slotEquipments:
+      - slotId: shoulderR_Weapon
+        equipmentInstanceId: eq_cannon
+      armLoadout:
+        primaryEquipmentInstanceId: 
+        reserveEquipmentInstanceId: 
     - bodyRegion: 6
       frameInstanceId: frame_Legs
       slotEquipments: []
+      armLoadout:
+        primaryEquipmentInstanceId: 
+        reserveEquipmentInstanceId: 
     pilotId: 
     aiProfileId: 
   partCatalog: {fileID: 11400000, guid: 39f00d46a62deda489b2d877543c3dfa, type: 2}
@@ -1106,7 +1131,7 @@ MonoBehaviour:
     currentHP: -1
     equipped: 0
   - instanceId: frame_torso
-    partId: BF_Torso_Std
+    partId: BF_Torso_Hev
     currentHP: -1
     equipped: 0
   - instanceId: frame_armL
@@ -1137,6 +1162,8 @@ MonoBehaviour:
     partId: EQ_Cannon_Std
     currentHP: -1
     equipped: 0
+  partConfig: {fileID: 0}
+  salvageConfig: {fileID: 0}
   deployOnStart: 1
   logDefeatReason: 1
   logDeploySummary: 1
@@ -1204,6 +1231,8 @@ MonoBehaviour:
   region: 5
   maxHP: 50
   damagedThreshold: 0.5
+  hasQualityPool: 0
+  qualityHPMax: 50
 --- !u!65 &598246587
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1558,6 +1587,8 @@ MonoBehaviour:
   region: 4
   maxHP: 50
   damagedThreshold: 0.5
+  hasQualityPool: 0
+  qualityHPMax: 50
 --- !u!65 &785903596
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1703,7 +1734,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2231389261795679787, guid: 8f497d044893c0441919699846fe2430, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2368729939674012641, guid: 8f497d044893c0441919699846fe2430, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1854,6 +1885,8 @@ MonoBehaviour:
   region: 2
   maxHP: 40
   damagedThreshold: 0.5
+  hasQualityPool: 0
+  qualityHPMax: 50
 --- !u!65 &981964124
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2013,6 +2046,8 @@ MonoBehaviour:
   region: 0
   maxHP: 30
   damagedThreshold: 0.5
+  hasQualityPool: 0
+  qualityHPMax: 50
 --- !u!65 &1288982281
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2087,6 +2122,8 @@ MonoBehaviour:
   region: 1
   maxHP: 80
   damagedThreshold: 0.5
+  hasQualityPool: 0
+  qualityHPMax: 50
 --- !u!65 &1575832568
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2676,6 +2713,8 @@ MonoBehaviour:
   region: 3
   maxHP: 40
   damagedThreshold: 0.5
+  hasQualityPool: 0
+  qualityHPMax: 50
 --- !u!65 &2118990980
 BoxCollider:
   m_ObjectHideFlags: 0

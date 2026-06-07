@@ -101,12 +101,75 @@ namespace SteelLance.Data
             }
 
             var totalWeight = MechBuildCalculator.GetTotalWeight(build, catalog, instances);
-            if (totalWeight > MechBuildCalculator.GetWeightClassLimit(build.weightClass))
+            var weightLimit = MechBuildCalculator.GetWeightClassLimit(build.weightClass);
+            if (totalWeight > weightLimit)
             {
                 AddError(result, BuildValidationError.OverWeight);
+                result.Details.Add(
+                    $"TotalWeight={totalWeight:0.#}t, weightClass上限={weightLimit:0.#}t ({build.weightClass})");
             }
 
+            ValidateShoulderPair(build, catalog, instanceLookup, result);
+
             return result;
+        }
+
+        private static void ValidateShoulderPair(
+            MechBuild build,
+            PartCatalogSO catalog,
+            Dictionary<string, PartInstance> instanceLookup,
+            BuildValidationResult result)
+        {
+            string leftSetId = null;
+            string rightSetId = null;
+
+            foreach (var slot in build.bodySlots)
+            {
+                if (slot == null)
+                {
+                    continue;
+                }
+
+                if (slot.bodyRegion != BodyRegion.ShoulderL && slot.bodyRegion != BodyRegion.ShoulderR)
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(slot.frameInstanceId) ||
+                    !instanceLookup.TryGetValue(slot.frameInstanceId, out var frameInstance))
+                {
+                    continue;
+                }
+
+                var frame = catalog.GetBodyFrame(frameInstance.partId);
+                if (frame == null)
+                {
+                    continue;
+                }
+
+                if (slot.bodyRegion == BodyRegion.ShoulderL)
+                {
+                    leftSetId = frame.shoulderSetId;
+                }
+                else
+                {
+                    rightSetId = frame.shoulderSetId;
+                }
+            }
+
+            var leftEmpty = string.IsNullOrEmpty(leftSetId);
+            var rightEmpty = string.IsNullOrEmpty(rightSetId);
+            if (leftEmpty && rightEmpty)
+            {
+                return;
+            }
+
+            if (leftEmpty != rightEmpty || leftSetId != rightSetId)
+            {
+                AddError(result, BuildValidationError.ShoulderPairMismatch);
+                result.Details.Add(
+                    $"肩ペア不一致: ShoulderL='{leftSetId ?? ""}' / ShoulderR='{rightSetId ?? ""}'（同一 shoulderSetId 必須）");
+            }
         }
 
         private static void ValidateSlotEquipment(

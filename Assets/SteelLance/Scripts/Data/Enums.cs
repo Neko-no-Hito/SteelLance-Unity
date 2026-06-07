@@ -66,8 +66,10 @@ namespace SteelLance.Data
     {
         TorsoDestroyed,
         HeadDestroyed,
-        LegsDestroyed,
-        AllWeaponsLost
+        AllWeaponsLost,
+
+        /// <summary>Deprecated v0.3.1 — legs are not an end-battle flag.</summary>
+        LegsDestroyed = 100
     }
 
     public enum BuildValidationError
@@ -77,6 +79,7 @@ namespace SteelLance.Data
         SlotMismatch,
         OverWeight,
         DuplicateInstance,
-        TorsoDestroyed
+        TorsoDestroyed,
+        ShoulderPairMismatch
     }
 }

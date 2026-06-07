@@ -7,6 +7,8 @@ namespace SteelLance.Combat
     {
         public Transform attacker;
         public BodyRegion? hitRegion;
+        public WeaponProfile weapon;
+        public bool isVenting;
     }
 
     public interface IDamageable

@@ -13,6 +13,11 @@ namespace SteelLance.Data
 
         public SlotDefinition[] internalSlots;
         public GameObject visualPrefab;
+
+        [Header("Shoulder (ShoulderL/R only — Phase3+ combat)")]
+        public string shoulderSetId;
+        public string shoulderWeaponSetId;
+        public ShoulderBoostProfile boost = new();
     }
 
     [System.Serializable]
